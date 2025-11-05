@@ -1,0 +1,86 @@
+{
+  "nodes": [
+    {
+      "id": "fb0657cb-8898-42ae-9b98-e0d7a66919a9",
+      "name": "root",
+      "type": "root"
+    },
+    {
+      "id": "4b90fca5-0cd6-448b-976e-4574c922d401",
+      "name": "EnvType",
+      "type": "parameter"
+    },
+    {
+      "id": "104d93ea-5550-4668-a76e-3c7cefb2d116",
+      "name": "InstanceType",
+      "type": "parameter"
+    },
+    {
+      "id": "e974d891-b9d6-422e-bd23-99e0b9494feb",
+      "name": "Cond.IsProduction",
+      "type": "condition"
+    },
+    {
+      "id": "eb044bd9-4200-4555-af73-06a92c9a4c36",
+      "name": "EC2Instance",
+      "type": "resource"
+    },
+    {
+      "id": "f9ea21e6-5384-4802-9054-24a324a345e9",
+      "name": "MountPoint",
+      "type": "resource"
+    },
+    {
+      "id": "a0ff4626-43c9-4376-b05a-2988a48387fd",
+      "name": "NewVolume",
+      "type": "resource"
+    }
+  ],
+  "edges": [
+    {
+      "from": "root",
+      "to": "EnvType",
+      "edge_type": ""
+    },
+    {
+      "from": "root",
+      "to": "InstanceType",
+      "edge_type": ""
+    },
+    {
+      "from": "EnvType",
+      "to": "Cond.IsProduction",
+      "edge_type": ""
+    },
+    {
+      "from": "InstanceType",
+      "to": "EC2Instance",
+      "edge_type": ""
+    },
+    {
+      "from": "Cond.IsProduction",
+      "to": "MountPoint",
+      "edge_type": "condition-existence"
+    },
+    {
+      "from": "EC2Instance",
+      "to": "MountPoint",
+      "edge_type": ""
+    },
+    {
+      "from": "NewVolume",
+      "to": "MountPoint",
+      "edge_type": ""
+    },
+    {
+      "from": "Cond.IsProduction",
+      "to": "NewVolume",
+      "edge_type": "condition-existence"
+    },
+    {
+      "from": "EC2Instance",
+      "to": "NewVolume",
+      "edge_type": ""
+    }
+  ]
+}

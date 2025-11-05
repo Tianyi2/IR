@@ -1,0 +1,71 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Parameters": {
+    "EnvType": {
+      "Description": "Environment type",
+      "Default": "test",
+      "Type": "String",
+      "AllowedValues": [
+        "prod",
+        "test"
+      ],
+      "ConstraintDescription": "must specify prod or test"
+    },
+    "InstanceType": {
+      "Description": "Instance type",
+      "Default": "c5.xlarge",
+      "Type": "String",
+      "AllowedValues": [
+        "c5.xlarge",
+        "c5.2xlarge"
+      ]
+    }
+  },
+  "Conditions": {
+    "IsProduction": {
+      "Equals": [
+        {
+          "Ref": "EnvType"
+        },
+        "prod"
+      ]
+    }
+  },
+  "Resources": {
+    "EC2Instance": {
+      "Type": "AWS::EC2::Instance",
+      "Properties": {
+        "ImageId": "ami-1234567890abcdef0",
+        "InstanceType": {
+          "Ref": "InstanceType"
+        }
+      }
+    },
+    "MountPoint": {
+      "Type": "AWS::EC2::VolumeAttachment",
+      "Condition": "IsProduction",
+      "Properties": {
+        "InstanceId": {
+          "Ref": "EC2Instance"
+        },
+        "VolumeId": {
+          "Ref": "NewVolume"
+        },
+        "Device": "/dev/sdh"
+      }
+    },
+    "NewVolume": {
+      "Type": "AWS::EC2::Volume",
+      "Condition": "IsProduction",
+      "Properties": {
+        "Size": 100,
+        "AvailabilityZone": {
+          "GetAtt": [
+            "EC2Instance",
+            "AvailabilityZone"
+          ]
+        }
+      }
+    }
+  }
+}

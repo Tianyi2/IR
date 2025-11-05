@@ -1,0 +1,158 @@
+{
+  "metadata": {
+    "template_id": "d4b98f74-90ac-4a91-a332-d38aca4db63b",
+    "template_type": "CloudFormation",
+    "cloud_service_provider": "AWS_2010-09-09",
+    "file_name": "resource_reference_test.yaml",
+    "description": "NA",
+    "additional_info": "NA"
+  },
+  "parameters": [
+    {
+      "id": "4b90fca5-0cd6-448b-976e-4574c922d401",
+      "name": "EnvType",
+      "type": "String",
+      "default": "test",
+      "constraints": {
+        "allowed_values": [
+          "prod",
+          "test"
+        ]
+      },
+      "description": "Environment type"
+    },
+    {
+      "id": "104d93ea-5550-4668-a76e-3c7cefb2d116",
+      "name": "InstanceType",
+      "type": "String",
+      "default": "c5.xlarge",
+      "constraints": {
+        "allowed_values": [
+          "c5.xlarge",
+          "c5.2xlarge"
+        ]
+      },
+      "description": "Instance type"
+    }
+  ],
+  "conditions": [
+    {
+      "id": "e974d891-b9d6-422e-bd23-99e0b9494feb",
+      "name": "Cond.IsProduction",
+      "condition": {
+        "Equals": [
+          {
+            "Ref": "EnvType"
+          },
+          "prod"
+        ]
+      },
+      "ruled_para": "NA",
+      "constraint": "NA",
+      "description": "NA",
+      "depend_para": [
+        "4b90fca5-0cd6-448b-976e-4574c922d401"
+      ],
+      "depend_cond": "NA"
+    }
+  ],
+  "resources": [
+    {
+      "id": "eb044bd9-4200-4555-af73-06a92c9a4c36",
+      "name": "EC2Instance",
+      "type": "AWS::EC2::Instance",
+      "properties": [
+        {
+          "name": "ImageId",
+          "value": "ami-1234567890abcdef0",
+          "resource_refs": "NA",
+          "parameter_refs": "NA",
+          "depend_conditions": "NA"
+        },
+        {
+          "name": "InstanceType",
+          "value": {
+            "Ref": "InstanceType"
+          },
+          "resource_refs": "NA",
+          "parameter_refs": [
+            "104d93ea-5550-4668-a76e-3c7cefb2d116"
+          ],
+          "depend_conditions": "NA"
+        }
+      ],
+      "arguments": "NA"
+    },
+    {
+      "id": "f9ea21e6-5384-4802-9054-24a324a345e9",
+      "name": "MountPoint",
+      "type": "AWS::EC2::VolumeAttachment",
+      "properties": [
+        {
+          "name": "InstanceId",
+          "value": {
+            "Ref": "EC2Instance"
+          },
+          "resource_refs": [
+            "eb044bd9-4200-4555-af73-06a92c9a4c36"
+          ],
+          "parameter_refs": "NA",
+          "depend_conditions": "NA"
+        },
+        {
+          "name": "VolumeId",
+          "value": {
+            "Ref": "NewVolume"
+          },
+          "resource_refs": [
+            "a0ff4626-43c9-4376-b05a-2988a48387fd"
+          ],
+          "parameter_refs": "NA",
+          "depend_conditions": "NA"
+        },
+        {
+          "name": "Device",
+          "value": "/dev/sdh",
+          "resource_refs": "NA",
+          "parameter_refs": "NA",
+          "depend_conditions": "NA"
+        }
+      ],
+      "arguments": {
+        "condition": "Cond.IsProduction"
+      }
+    },
+    {
+      "id": "a0ff4626-43c9-4376-b05a-2988a48387fd",
+      "name": "NewVolume",
+      "type": "AWS::EC2::Volume",
+      "properties": [
+        {
+          "name": "Size",
+          "value": 100,
+          "resource_refs": "NA",
+          "parameter_refs": "NA",
+          "depend_conditions": "NA"
+        },
+        {
+          "name": "AvailabilityZone",
+          "value": {
+            "GetAtt": [
+              "EC2Instance",
+              "AvailabilityZone"
+            ]
+          },
+          "resource_refs": [
+            "eb044bd9-4200-4555-af73-06a92c9a4c36"
+          ],
+          "parameter_refs": "NA",
+          "depend_conditions": "NA"
+        }
+      ],
+      "arguments": {
+        "condition": "Cond.IsProduction"
+      }
+    }
+  ],
+  "outputs": []
+}
